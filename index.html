@@ -1,0 +1,57 @@
+<html>
+  <script>
+    function se(p, ss) {
+      return Math.sqrt(p * (1-p) / ss);
+    }
+  
+    function zscore(n){
+      var a = parseInt(document.getElementById("a").value) / 100.0;
+      var b = parseInt(document.getElementById("b").value) / 100.0;
+      var c = parseInt(document.getElementById("c").value) / 100.0;
+      
+      var sa = n * (1 - c);
+      var sb = n * c;
+      var p = (b - a) / a;
+      
+      return Math.abs((a - b) / Math.sqrt(se(a, sa) * se(a, sa) + se(b, sb) * se(b, sb))) - 1.65;
+    }
+    
+    function newton(){
+      var max = 100000;
+      var n = 10000;
+      var n1 = 10100;
+      var i = 0;
+      while (Math.abs(n - n1) > 1 && i++ < max) {
+        var z = zscore(n);
+        var z1 = zscore(n1);
+        var d = (z1 - z) / (n1 - n);
+        n = n1;
+        n1 = n1 - z / d;
+      }
+      if( i > max-2) {
+        alert("did not converge")
+      }
+      
+      document.getElementById("results").innerText = Math.round(n);
+    }
+  </script>
+  <body onload="newton()">
+    <table>
+      <tr>
+        <td>Control CTR</td><td><input id="a" value="19">%</td>
+      </tr>
+      <tr>
+        <td>Test CTR</td><td><input id="b" value="20">%.
+  </td></tr>
+      <tr>
+        <td>Test Rate</td><td><input id="c" value="1">%.
+  </td></tr>
+      <tr>
+        <td>Confidence</td><td>95%</td>
+  </td></tr>
+  </table>        
+  <p>
+    <button onclick="newton()">math!</button>
+    You need at least <span id="results">N</span> impressions to be sure.
+  </body>
+</html>
